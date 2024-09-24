@@ -15,7 +15,6 @@ app.post('/', async (c) => {
         datasourceUrl: c.env.DATABASE_URL,
     })
 
-
     const { email, password } = await c.req.json()
 
     const hashValue = await hashing(password)
@@ -29,7 +28,7 @@ app.post('/', async (c) => {
 
     if (hashValue == userData.password) {
 
-        const token = await sign({ email, name: userData.name, password: hashValue }, c.env.JWT_SECRET)
+        const token = await sign({ id : userData.id ,email }, c.env.JWT_SECRET)
 
         c.status(200)
         return c.json({ msg: 'Welcome!', token })

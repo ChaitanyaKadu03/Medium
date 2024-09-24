@@ -28,7 +28,6 @@ app.post('/', async (c) => {
     const hash_value: String = await hashing(password) // return hash value
 
     try {
-        const token = await sign({ email, name, password: hash_value }, c.env.JWT_SECRET)
 
         const user = await prisma.user.create({
             data: {
@@ -38,12 +37,13 @@ app.post('/', async (c) => {
             }
         })
 
+        const token = await sign({ id: user.id, email }, c.env.JWT_SECRET)
         c.status(200)
 
         return c.json({ user, token, msg: "User and Posts Added" })
     } catch (error) {
         c.status(404)
-        return c.json({ msg: "Failed to generate token" })
+        return c.json({ msg: "Failed to generate token", error })
     }
 })
 
